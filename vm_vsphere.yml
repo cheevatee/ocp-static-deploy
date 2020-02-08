@@ -1,0 +1,73 @@
+---
+- hosts: localhost
+  vars_files:
+    - vars/openshift_vars.yml
+    - vars/nodes_vars.yml
+  tasks:
+    - name: Create VMs on vsphere
+      vmware_guest:
+        hostname: "{{ VCENTER_SERVER }}"
+        username: "{{ VCENTER_USER }}"
+        password: "{{ VCENTER_PASS }}"
+        validate_certs: no
+        datacenter: "{{ VCENTER_DC }}"
+        cluster: " {{ VCENTER_CLUSTER }}"
+        folder: "{{ VCENTER_VM_FOLDER }}"
+        name: "{{ item.node_name }}"
+        state: poweredoff
+        disk:
+        - size_gb: "{{ item.disk }}"
+          type: thin
+          datastore: "{{ VCENTER_DS }}"
+        hardware:
+          memory_mb: "{{ item.rams }}"
+          num_cpus: "{{ item.cpus }}"
+          boot_firmware: bios
+        customvalues:
+          - key: disk.EnableUUID
+            value: 'TRUE'
+          - key: guestinfo.ignition.config.data.encoding
+            value: 'base64'
+      loop: "{{ nodes }}"
+      tags: create_vms
+    - name: Add ignition config to VMs on vsphere
+      vmware_guest:
+        hostname: "{{ VCENTER_SERVER }}"
+        username: "{{ VCENTER_USER }}"
+        password: "{{ VCENTER_PASS }}"
+        validate_certs: no
+        datacenter: "{{ VCENTER_DC }}"
+        cluster: " {{ VCENTER_CLUSTER }}"
+        folder: "{{ VCENTER_VM_FOLDER }}"
+        name: "{{ item.node_name }}"
+        customvalues:
+          - key: guestinfo.ignition.config.data
+            value: "{{ lookup('file', '/var/www/html/{{ item.base64_ignite_file }}') }}"
+      loop: "{{ nodes }}"
+      tags: add_ign_config
+    - name: Power Off VMs
+      vmware_guest:
+        hostname: "{{ VCENTER_SERVER }}"
+        username: "{{ VCENTER_USER }}"
+        password: "{{ VCENTER_PASS }}"
+        validate_certs: no
+        datacenter: "{{ VCENTER_DC }}"
+        cluster: " {{ VCENTER_CLUSTER }}"
+        folder: "{{ VCENTER_VM_FOLDER }}"
+        name: "{{ item.node_name }}"
+        state: poweredoff
+      loop: "{{ nodes }}"
+      tags: power_off
+    - name: Power On VMs
+      vmware_guest:
+        hostname: "{{ VCENTER_SERVER }}"
+        username: "{{ VCENTER_USER }}"
+        password: "{{ VCENTER_PASS }}"
+        validate_certs: no
+        datacenter: "{{ VCENTER_DC }}"
+        cluster: " {{ VCENTER_CLUSTER }}"
+        folder: "{{ VCENTER_VM_FOLDER }}"
+        name: "{{ item.node_name }}"
+        state: poweredon
+      loop: "{{ nodes }}"
+      tags: power_on
