@@ -22,8 +22,9 @@ I try writing ansible clearly and simply as I can for everyone.
 Note : When you run setup_ocp_static.yml all file will download to files directory
 
 ## Tested
+- Test on rhel8.X and python3
 - deploy ocp 4.2.16 bare-metal ==> SUCCESS
-- deploy on VMware ==> Developing and Testing
+- deploy ocp 4.2.16 vSphere    ==> SUCCESS
 
 License
 ----
