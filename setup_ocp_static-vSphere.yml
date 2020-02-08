@@ -145,3 +145,8 @@
         src: "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz"
         dest: /var/www/html/
       tags: test26
+    - name: create append-bootstrap file for your bootstrap node
+      template:
+        src: templates/append-bootstrap.ign.j2
+        dest: /var/www/html/append-bootstrap.ign
+      tags: test27
