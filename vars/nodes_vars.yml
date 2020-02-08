@@ -22,7 +22,7 @@ nodes:
     node_ip: 192.168.4.99
     original_ignite_file: bootstrap.ign
     update_ignite_file: bootstrap01.ign
-    base64_ignite_file: bootstrap01.64
+    base64_ignite_file: append-bootstrap.64
   - node_name: "master01.{{ CLUSTERID }}.{{ DOMAIN }}"
     node_name_short: master01
     cpus: 4
