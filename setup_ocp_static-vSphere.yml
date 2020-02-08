@@ -53,8 +53,8 @@
 ################ Change templates from this task ################
     - name: Create install-config.yaml file
       template:
-        src: templates/install-config-bare-metal.yml.j2
-#        src: templates/install-config-vsphere.yaml.j2
+#        src: templates/install-config-bare-metal.yml.j2
+        src: templates/install-config-vsphere.yaml.j2
         dest: "~/openshift/{{ CLUSTERID }}/install-config.yaml"
       tags: test9
 #################################################################
