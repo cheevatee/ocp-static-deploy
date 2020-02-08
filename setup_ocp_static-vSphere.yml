@@ -140,13 +140,19 @@
         path: /iso
         state: absent
       tags: test25
-    - name: copy rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz to /var/www/html/
+    - name: Copy rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz to /var/www/html/
       copy:
         src: "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz"
         dest: /var/www/html/
       tags: test26
-    - name: create append-bootstrap file for your bootstrap node
+    - name: Create append-bootstrap file for your bootstrap node
       template:
         src: templates/append-bootstrap.ign.j2
         dest: /var/www/html/append-bootstrap.ign
       tags: test27
+    - name: Covert the master, worker and secondary bootstrap ignition config files to Base64 encoding
+      shell: |
+        /usr/bin/base64 -w0 /var/www/html/{{ item.update_ignite_file }} > /var/www/html/{{ item.node_name_short }}.64
+        /usr/bin/base64 -w0 /var/www/html/append-bootstrap.ign > /var/www/html/append-bootstrap.64
+      loop: "{{ nodes }}"
+      tags: test28
