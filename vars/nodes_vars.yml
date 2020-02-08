@@ -22,6 +22,7 @@ nodes:
     node_ip: 192.168.4.99
     original_ignite_file: bootstrap.ign
     update_ignite_file: bootstrap01.ign
+    base64_ignite_file: bootstrap01.64
   - node_name: "master01.{{ CLUSTERID }}.{{ DOMAIN }}"
     node_name_short: master01
     cpus: 4
@@ -30,6 +31,7 @@ nodes:
     node_ip: 192.168.4.101
     original_ignite_file: master.ign
     update_ignite_file: master01.ign
+    base64_ignite_file: master01.64
   - node_name: "master02.{{ CLUSTERID }}.{{ DOMAIN }}"
     node_name_short: master02
     cpus: 4
@@ -38,6 +40,7 @@ nodes:
     node_ip: 192.168.4.102
     original_ignite_file: master.ign
     update_ignite_file: master02.ign
+    base64_ignite_file: master02.64
   - node_name: "master03.{{ CLUSTERID }}.{{ DOMAIN }}"
     cpus: 4
     rams: 8192
@@ -46,6 +49,7 @@ nodes:
     node_ip: 192.168.4.103
     original_ignite_file: master.ign
     update_ignite_file: master03.ign
+    base64_ignite_file: master03.64
   - node_name: "worker01.{{ CLUSTERID }}.{{ DOMAIN }}"
     cpus: 4
     rams: 8192
@@ -54,6 +58,7 @@ nodes:
     node_ip: 192.168.4.104
     original_ignite_file: worker.ign
     update_ignite_file: worker01.ign
+    base64_ignite_file: worker01.64
   - node_name: "worker02.{{ CLUSTERID }}.{{ DOMAIN }}"
     cpus: 4
     rams: 8192
@@ -62,3 +67,4 @@ nodes:
     node_ip: 192.168.4.105
     original_ignite_file: worker.ign
     update_ignite_file: worker02.ign
+    base64_ignite_file: worker02.64
