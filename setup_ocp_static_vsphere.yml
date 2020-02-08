@@ -152,7 +152,7 @@
       tags: test27
     - name: Covert the master, worker and secondary bootstrap ignition config files to Base64 encoding
       shell: |
-        /usr/bin/base64 -w0 /var/www/html/{{ item.update_ignite_file }} > /var/www/html/{{ item.node_name_short }}.64
+        /usr/bin/base64 -w0 /var/www/html/{{ item.update_ignite_file }} > /var/www/html/{{ item.base64_ignite_file }}
         /usr/bin/base64 -w0 /var/www/html/append-bootstrap.ign > /var/www/html/append-bootstrap.64
       loop: "{{ nodes }}"
       tags: test28
