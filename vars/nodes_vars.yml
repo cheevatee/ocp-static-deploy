@@ -16,32 +16,49 @@ add_boot_entry: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node
 nodes:
   - node_name: "bootstrap01.{{ CLUSTERID }}.{{ DOMAIN }}"
     node_name_short: bootstrap01
+    cpus: 4
+    rams: 8192
+    disk: 120
     node_ip: 192.168.4.99
     original_ignite_file: bootstrap.ign
     update_ignite_file: bootstrap01.ign
   - node_name: "master01.{{ CLUSTERID }}.{{ DOMAIN }}"
     node_name_short: master01
+    cpus: 4
+    rams: 8192
+    disk: 120
     node_ip: 192.168.4.101
     original_ignite_file: master.ign
     update_ignite_file: master01.ign
   - node_name: "master02.{{ CLUSTERID }}.{{ DOMAIN }}"
     node_name_short: master02
+    cpus: 4
+    rams: 8192
+    disk: 120
     node_ip: 192.168.4.102
     original_ignite_file: master.ign
     update_ignite_file: master02.ign
   - node_name: "master03.{{ CLUSTERID }}.{{ DOMAIN }}"
+    cpus: 4
+    rams: 8192
+    disk: 120
     node_name_short: master03
     node_ip: 192.168.4.103
     original_ignite_file: master.ign
     update_ignite_file: master03.ign
   - node_name: "worker01.{{ CLUSTERID }}.{{ DOMAIN }}"
+    cpus: 4
+    rams: 8192
+    disk: 120
     node_name_short: worker01
     node_ip: 192.168.4.104
     original_ignite_file: worker.ign
     update_ignite_file: worker01.ign
   - node_name: "worker02.{{ CLUSTERID }}.{{ DOMAIN }}"
+    cpus: 4
+    rams: 8192
+    disk: 120
     node_name_short: worker02
     node_ip: 192.168.4.105
     original_ignite_file: worker.ign
     update_ignite_file: worker02.ign
-
