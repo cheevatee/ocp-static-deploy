@@ -25,6 +25,8 @@ VCENTER_SERVER: vsphere.example.com
 VCENTER_USER: "administrator@vsphere.local"
 VCENTER_PASS: 'supersecretpassword'
 VCENTER_DC: DC1
+VCENTER_CLUSTER: cluster01
+VCENTER_VM_FOLDER: "{{ CLUSTERID }}"
 VCENTER_DS: datastore1
 PULL_SECRET: "{{ lookup('file', '../files/pull-secret.json') }}"
 OCP_SSH_KEY: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
