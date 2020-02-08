@@ -140,7 +140,7 @@
         path: /iso
         state: absent
       tags: test25
-    - name: copy rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz to /var/www/html/
+    - name: Copy rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz to /var/www/html/
       copy:
         src: "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz"
         dest: /var/www/html/
