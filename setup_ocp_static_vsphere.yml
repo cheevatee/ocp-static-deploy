@@ -10,66 +10,66 @@
         name: "{{ item }}"
         state: latest
       loop: "{{ packages_list }}"
-      tags: test1
+      tags: vms1
     - name: Start and enabled httpd service
       service:
         name: httpd
         state: started
         enabled: yes
-      tags: test2
+      tags: vms2
     - name: Download oc client and openshift-install command
       get_url:
         url: "{{ item }}"
         dest: ./files/
       loop: "{{ openshift_client_url }}"
-      tags: test3
+      tags: vms3
     - name: Download rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer.iso and rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz
       get_url:
         url: "{{ item }}"
         dest: ./files/
       loop: "{{ openshift_install_url }}"
       ignore_errors: yes
-      tags: test4
+      tags: vms4
     - name: rename rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal-bios.raw.gz to rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz
       command: mv files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal-bios.raw.gz files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz
       ignore_errors: yes
-      tags: test5
+      tags: vms5
     - name: Setup oc client and openshift-install command
       unarchive:
         src: "{{ item }}"
         dest: /usr/local/bin/
       loop: "{{ openshift_client_file }}"
-      tags: test6
+      tags: vms6
     - name: Generate an OpenSSH keypair
       command: ssh-keygen -q -t rsa -f ~/.ssh/id_rsa -C "" -N ""
       ignore_errors: yes
-      tags: test7
+      tags: vms7
     - name: Create openshift artifacts folder
       file:
         path: "~/openshift/{{ CLUSTERID }}"
         state: directory
         recurse: yes
-      tags: test8
+      tags: vms8
 ################ Change templates from this task ################
     - name: Create install-config.yaml file
       template:
 #        src: templates/install-config-bare-metal.yml.j2
         src: templates/install-config-vsphere.yaml.j2
         dest: "~/openshift/{{ CLUSTERID }}/install-config.yaml"
-      tags: test9
+      tags: vms9
 #################################################################
     - name: Create manifests file
       command: "openshift-install create manifests --dir ~/openshift/{{ CLUSTERID }}/"
-      tags: test10
+      tags: vms10
     - name: Disable masters are schedulable
       lineinfile:
         path: "~/openshift/{{ CLUSTERID }}/manifests/cluster-scheduler-02-config.yml"
         regexp: '  mastersSchedulable: true'
         line: '  mastersSchedulable: false'
-      tags: test11
+      tags: vms11
     - name: Create ignition files
       command: "openshift-install create ignition-configs --dir ~/openshift/{{ CLUSTERID }}"
-      tags: test12
+      tags: vms12
 #    - name: Download filetranspiler tool (for creating bootstrap with hostname and static IP)
 #      command: "git clone https://github.com/ashcrow/filetranspiler ~/openshift/filetranspiler"
 #      ignore_errors: yes
@@ -101,11 +101,12 @@
         src: "~/openshift/{{ CLUSTERID }}/{{ item.original_ignite_file }}"
         dest: "/var/www/html/{{ item.update_ignite_file }}"
       loop: "{{ nodes }}"
+      tags: vms13
     - name: Create directory for mount openshift ISO file
       file:
         path: "/iso"
         state: directory
-      tags: test18
+      tags: vms14
     - name: Mount rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer.iso
       mount:
         path: /iso
@@ -113,51 +114,51 @@
         fstype: iso9660
         opts: ro,loop
         state: mounted
-      tags: test19
+      tags: vms15
     - name: Create directory for custom boot openshift ISO
       file:
         path: "/data/iso/{{ item.node_name_short }}" 
         state: directory
       loop: "{{ nodes }}"
-      tags: test20
+      tags: vms16
     - name: Extract the openshift ISO to a temporary location
       command: "/usr/bin/rsync -a /iso/ /data/iso/{{ item.node_name_short }}"
       loop: "{{ nodes }}"
-      tags: test21
+      tags: vms17
     - name: Modify the boot entry for each node directory
       lineinfile:
         dest: "/data/iso/{{ item.node_name_short }}/isolinux/isolinux.cfg"
         regexp: "^  append initrd=/images/initramfs.img nomodeset rd.neednet=1 coreos.inst=yes"
         line: "  append initrd=/images/initramfs.img nomodeset rd.neednet=1 coreos.inst=yes {{ add_boot_entry }}"
       loop: "{{ nodes }}"
-      tags: test22
+      tags: vms18
     - name: Create new openshift ISO for all nodes
       shell: 'cd /data/iso/{{ item.node_name_short }}; mkisofs -U -A "{{ item.node_name_short }}" -V "{{ item.node_name_short }}" -volset "{{ item.node_name_short }}" -J -joliet-long -r -v -T -x ./lost+found -o /data/iso/{{ item.node_name_short }}/{{ item.node_name_short }}.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -eltorito-alt-boot -e images/efiboot.img -no-emul-boot .'
       loop: "{{ nodes }}"
       register: output
-      tags: test23
+      tags: vms19
     - name: print
       debug:
         var: output
-      tags: test24
+      tags: vms20
     - name: Unmount a openshift ISO file
       mount:
         path: /iso
         state: absent
-      tags: test25
+      tags: vms21
     - name: Copy rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz to /var/www/html/
       copy:
         src: "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz"
         dest: /var/www/html/
-      tags: test26
+      tags: vms22
     - name: Create append-bootstrap file for your bootstrap node
       template:
         src: templates/append-bootstrap.ign.j2
         dest: /var/www/html/append-bootstrap.ign
-      tags: test27
+      tags: vms23
     - name: Covert the master, worker and secondary bootstrap ignition config files to Base64 encoding
       shell: |
         /usr/bin/base64 -w0 /var/www/html/{{ item.update_ignite_file }} > /var/www/html/{{ item.base64_ignite_file }}
         /usr/bin/base64 -w0 /var/www/html/append-bootstrap.ign > /var/www/html/append-bootstrap.64
       loop: "{{ nodes }}"
-      tags: test28
+      tags: vms24
