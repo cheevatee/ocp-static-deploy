@@ -70,32 +70,37 @@
     - name: Create ignition files
       command: "openshift-install create ignition-configs --dir ~/openshift/{{ CLUSTERID }}"
       tags: test12
-    - name: Download filetranspiler tool (for creating bootstrap with hostname and static IP)
-      command: "git clone https://github.com/ashcrow/filetranspiler ~/openshift/filetranspiler"
-      ignore_errors: yes
-      tags: test13
-    - name: Create hosts folder in filetranspiler
-      file:
-        path: "~/openshift/filetranspiler/{{ item.node_name_short}}/etc/sysconfig/network-scripts"
-        state: directory
-      loop: "{{ nodes }}"
-      tags: test14
-    - name: Set /etc/hostname to nodes in filetranspiler
-      copy:
-        content: "{{ item.node_name }}"
-        dest: "~/openshift/filetranspiler/{{ item.node_name_short }}/etc/hostname"
-      loop: "{{ nodes }}"
-      tags: test15
-    - name: Set /etc/sysconfig/network-scripts/ifcfg-interface in filetranspiler
-      template:
-        src: templates/ifcfg-interface.j2
-        dest: "~/openshift/filetranspiler/{{ item.node_name_short }}/etc/sysconfig/network-scripts/ifcfg-{{ interface_name }}"
-      loop: "{{ nodes }}"
-      tags: test16
+#    - name: Download filetranspiler tool (for creating bootstrap with hostname and static IP)
+#      command: "git clone https://github.com/ashcrow/filetranspiler ~/openshift/filetranspiler"
+#      ignore_errors: yes
+#      tags: test13
+#    - name: Create hosts folder in filetranspiler
+#      file:
+#        path: "~/openshift/filetranspiler/{{ item.node_name_short}}/etc/sysconfig/network-scripts"
+#        state: directory
+#      loop: "{{ nodes }}"
+#      tags: test14
+#    - name: Set /etc/hostname to nodes in filetranspiler
+#      copy:
+#        content: "{{ item.node_name }}"
+#        dest: "~/openshift/filetranspiler/{{ item.node_name_short }}/etc/hostname"
+#      loop: "{{ nodes }}"
+#      tags: test15
+#    - name: Set /etc/sysconfig/network-scripts/ifcfg-interface in filetranspiler
+#      template:
+#        src: templates/ifcfg-interface.j2
+#        dest: "~/openshift/filetranspiler/{{ item.node_name_short }}/etc/sysconfig/network-scripts/ifcfg-{{ interface_name }}"
+#      loop: "{{ nodes }}"
+#      tags: test16
+#    - name: Create new ignition file for all nodes
+#      command: "~/openshift/filetranspiler/filetranspile -i ~/openshift/{{ CLUSTERID }}/{{ item.original_ignite_file }} -f ~/openshift/filetranspiler/{{ item.node_name_short }} -o /var/www/html/{{ item.update_ignite_file }}"
+#      loop: "{{ nodes }}"
+#      tags: test17
     - name: Create new ignition file for all nodes
-      command: "~/openshift/filetranspiler/filetranspile -i ~/openshift/{{ CLUSTERID }}/{{ item.original_ignite_file }} -f ~/openshift/filetranspiler/{{ item.node_name_short }} -o /var/www/html/{{ item.update_ignite_file }}"
+      copy:
+        src: "~/openshift/{{ CLUSTERID }}/{{ item.original_ignite_file }}"
+        dest: "/var/www/html/{{ item.update_ignite_file }}"
       loop: "{{ nodes }}"
-      tags: test17
     - name: Create directory for mount openshift ISO file
       file:
         path: "/iso"
