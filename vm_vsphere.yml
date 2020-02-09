@@ -29,7 +29,7 @@
           - key: guestinfo.ignition.config.data.encoding
             value: 'base64'
       loop: "{{ nodes }}"
-      tags: create_vms
+      tags: vms_create
     - name: Add ignition config to VMs on vsphere
       vmware_guest:
         hostname: "{{ VCENTER_SERVER }}"
@@ -44,7 +44,7 @@
           - key: guestinfo.ignition.config.data
             value: "{{ lookup('file', '/var/www/html/{{ item.base64_ignite_file }}') }}"
       loop: "{{ nodes }}"
-      tags: add_ign_config
+      tags: vms_ign_config
     - name: Power Off VMs
       vmware_guest:
         hostname: "{{ VCENTER_SERVER }}"
@@ -57,7 +57,7 @@
         name: "{{ item.node_name }}"
         state: poweredoff
       loop: "{{ nodes }}"
-      tags: power_off
+      tags: vms_off
     - name: Power On VMs
       vmware_guest:
         hostname: "{{ VCENTER_SERVER }}"
@@ -70,4 +70,4 @@
         name: "{{ item.node_name }}"
         state: poweredon
       loop: "{{ nodes }}"
-      tags: power_on
+      tags: vms_on
