@@ -18,13 +18,13 @@ I try writing ansible clearly and simply as I can for everyone.
 - Generate ignition file and iso for install OCP
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bare Metal<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\# ansible-playbook setup_ocp_static_bare_metal.yml -t <tags>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\# ansible-playbook setup_ocp_static_bare_metal.yml -t \<tags\>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vSphere<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\# ansible-playbook setup_ocp_static_vsphere.yml -t <tags>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\# ansible-playbook setup_ocp_static_vsphere.yml -t \<tags\>
 
 Note: 
-- Recommend run with option -t <tags>
+- Recommend run with option -t \<tags\>
 - All file will download to files directory
 
 ## Tested
