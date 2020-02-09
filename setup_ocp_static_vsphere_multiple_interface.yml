@@ -1,0 +1,158 @@
+---
+- hosts: localhost
+  vars_files:
+    - vars/packages_vars.yml
+    - vars/openshift_vars.yml
+    - vars/nodes_vars.yml
+  tasks:
+    - name: Setup prerequire packages 
+      yum:
+        name: "{{ item }}"
+        state: latest
+      loop: "{{ packages_list }}"
+      tags: test1
+    - name: Start and enabled httpd service
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+      tags: test2
+    - name: Download oc client and openshift-install command
+      get_url:
+        url: "{{ item }}"
+        dest: ./files/
+      loop: "{{ openshift_client_url }}"
+      tags: test3
+    - name: Download rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer.iso and rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz
+      get_url:
+        url: "{{ item }}"
+        dest: ./files/
+      loop: "{{ openshift_install_url }}"
+      ignore_errors: yes
+      tags: test4
+    - name: rename rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal-bios.raw.gz to rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz
+      command: mv files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal-bios.raw.gz files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz
+      ignore_errors: yes
+      tags: test5
+    - name: Setup oc client and openshift-install command
+      unarchive:
+        src: "{{ item }}"
+        dest: /usr/local/bin/
+      loop: "{{ openshift_client_file }}"
+      tags: test6
+    - name: Generate an OpenSSH keypair
+      command: ssh-keygen -q -t rsa -f ~/.ssh/id_rsa -C "" -N ""
+      ignore_errors: yes
+      tags: test7
+    - name: Create openshift artifacts folder
+      file:
+        path: "~/openshift/{{ CLUSTERID }}"
+        state: directory
+        recurse: yes
+      tags: test8
+################ Change templates from this task ################
+    - name: Create install-config.yaml file
+      template:
+#        src: templates/install-config-bare-metal.yml.j2
+        src: templates/install-config-vsphere.yaml.j2
+        dest: "~/openshift/{{ CLUSTERID }}/install-config.yaml"
+      tags: test9
+#################################################################
+    - name: Create manifests file
+      command: "openshift-install create manifests --dir ~/openshift/{{ CLUSTERID }}/"
+      tags: test10
+    - name: Disable masters are schedulable
+      lineinfile:
+        path: "~/openshift/{{ CLUSTERID }}/manifests/cluster-scheduler-02-config.yml"
+        regexp: '  mastersSchedulable: true'
+        line: '  mastersSchedulable: false'
+      tags: test11
+    - name: Create ignition files
+      command: "openshift-install create ignition-configs --dir ~/openshift/{{ CLUSTERID }}"
+      tags: test12
+    - name: Download filetranspiler tool (for creating bootstrap with hostname and static IP)
+      command: "git clone https://github.com/ashcrow/filetranspiler ~/openshift/filetranspiler"
+      ignore_errors: yes
+      tags: test13
+    - name: Create hosts folder in filetranspiler
+      file:
+        path: "~/openshift/filetranspiler/{{ item.node_name_short}}/etc/sysconfig/network-scripts"
+        state: directory
+      loop: "{{ nodes }}"
+      tags: test14
+    - name: Set /etc/hostname to nodes in filetranspiler
+      copy:
+        content: "{{ item.node_name }}"
+        dest: "~/openshift/filetranspiler/{{ item.node_name_short }}/etc/hostname"
+      loop: "{{ nodes }}"
+      tags: test15
+    - name: Set /etc/sysconfig/network-scripts/ifcfg-interface in filetranspiler
+      template:
+        src: templates/ifcfg-interface.j2
+        dest: "~/openshift/filetranspiler/{{ item.node_name_short }}/etc/sysconfig/network-scripts/ifcfg-{{ interface_name }}"
+      loop: "{{ nodes }}"
+      tags: test16
+    - name: Create new ignition file for all nodes
+      command: "~/openshift/filetranspiler/filetranspile -i ~/openshift/{{ CLUSTERID }}/{{ item.original_ignite_file }} -f ~/openshift/filetranspiler/{{ item.node_name_short }} -o /var/www/html/{{ item.update_ignite_file }}"
+      loop: "{{ nodes }}"
+      tags: test17
+    - name: Create directory for mount openshift ISO file
+      file:
+        path: "/iso"
+        state: directory
+      tags: test18
+    - name: Mount rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer.iso
+      mount:
+        path: /iso
+        src : "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer.iso"
+        fstype: iso9660
+        opts: ro,loop
+        state: mounted
+      tags: test19
+    - name: Create directory for custom boot openshift ISO
+      file:
+        path: "/data/iso/{{ item.node_name_short }}" 
+        state: directory
+      loop: "{{ nodes }}"
+      tags: test20
+    - name: Extract the openshift ISO to a temporary location
+      command: "/usr/bin/rsync -a /iso/ /data/iso/{{ item.node_name_short }}"
+      loop: "{{ nodes }}"
+      tags: test21
+    - name: Modify the boot entry for each node directory
+      lineinfile:
+        dest: "/data/iso/{{ item.node_name_short }}/isolinux/isolinux.cfg"
+        regexp: "^  append initrd=/images/initramfs.img nomodeset rd.neednet=1 coreos.inst=yes"
+        line: "  append initrd=/images/initramfs.img nomodeset rd.neednet=1 coreos.inst=yes {{ add_boot_entry }}"
+      loop: "{{ nodes }}"
+      tags: test22
+    - name: Create new openshift ISO for all nodes
+      shell: 'cd /data/iso/{{ item.node_name_short }}; mkisofs -U -A "{{ item.node_name_short }}" -V "{{ item.node_name_short }}" -volset "{{ item.node_name_short }}" -J -joliet-long -r -v -T -x ./lost+found -o /data/iso/{{ item.node_name_short }}/{{ item.node_name_short }}.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -eltorito-alt-boot -e images/efiboot.img -no-emul-boot .'
+      loop: "{{ nodes }}"
+      register: output
+      tags: test23
+    - name: print
+      debug:
+        var: output
+      tags: test24
+    - name: Unmount a openshift ISO file
+      mount:
+        path: /iso
+        state: absent
+      tags: test25
+    - name: Copy rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz to /var/www/html/
+      copy:
+        src: "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz"
+        dest: /var/www/html/
+      tags: test26
+    - name: Create append-bootstrap file for your bootstrap node
+      template:
+        src: templates/append-bootstrap.ign.j2
+        dest: /var/www/html/append-bootstrap.ign
+      tags: test27
+    - name: Covert the master, worker and secondary bootstrap ignition config files to Base64 encoding
+      shell: |
+        /usr/bin/base64 -w0 /var/www/html/{{ item.update_ignite_file }} > /var/www/html/{{ item.base64_ignite_file }}
+        /usr/bin/base64 -w0 /var/www/html/append-bootstrap.ign > /var/www/html/append-bootstrap.64
+      loop: "{{ nodes }}"
+      tags: test28
