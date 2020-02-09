@@ -1,0 +1,13 @@
+Monitor for cluster completion install
+
+# openshift-install wait-for bootstrap-complete --log-level debug
+# openshift-install wait-for install-complete --log-level debug
+
+To set the image registry storage to an empty directory:
+
+# oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patch '{"spec":{"storage":{"emptyDir":{}}}}'
+
+After installation, you must edit the Image Registry Operator configuration to switch the ManagementState from Removed to Managed.
+
+# oc edit configs.imageregistry.operator.openshift.io
+
