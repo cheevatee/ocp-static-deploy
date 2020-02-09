@@ -1,0 +1,13 @@
+---
+- hosts: localhost
+  vars_files:
+    - vars/openshift_vars.yml
+    - vars/multiple_interface_vars.yml
+  tasks:
+    - name: Set /etc/sysconfig/network-scripts/ifcfg-interface in filetranspiler
+      template:
+        src: templates/multiple-ifcfg-interface.j2
+        dest: "~/openshift/filetranspiler/{{ item.node_name_short }}/etc/sysconfig/network-scripts/ifcfg-{{ interface_name }}"
+      loop: "{{ interfaces }}"
+      tags: add_interfaces
+
