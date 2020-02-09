@@ -1,0 +1,24 @@
+---
+interface_name: enp3s0
+netmask: 255.255.255.0
+prefix: 24
+
+interfaces:
+  - node_name: "bootstrap01.{{ CLUSTERID }}.{{ DOMAIN }}"
+    node_name_short: bootstrap01
+    node_ip: 192.168.6.99
+  - node_name: "master01.{{ CLUSTERID }}.{{ DOMAIN }}"
+    node_name_short: master01
+    node_ip: 192.168.6.101
+  - node_name: "master02.{{ CLUSTERID }}.{{ DOMAIN }}"
+    node_name_short: master02
+    node_ip: 192.168.6.102
+  - node_name: "master03.{{ CLUSTERID }}.{{ DOMAIN }}"
+    node_name_short: master03
+    node_ip: 192.168.6.103
+  - node_name: "worker01.{{ CLUSTERID }}.{{ DOMAIN }}"
+    node_name_short: worker01
+    node_ip: 192.168.6.104
+  - node_name: "worker02.{{ CLUSTERID }}.{{ DOMAIN }}"
+    node_name_short: worker02
+    node_ip: 192.168.6.105
