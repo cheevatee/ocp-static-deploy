@@ -9,22 +9,28 @@ I try writing ansible clearly and simply as I can for everyone.
 ## How to used
 - Check ports on firewall is open
 
-\# ansible-playbook check_ports_open.yml
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\# ansible-playbook check_ports_open.yml
 
 - Check connection to whitelist url
 
-\# ansible-playbook check_whitelist_url.yml
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\# ansible-playbook check_whitelist_url.yml
 
 - Generate ignition file and iso for install OCP
 
-\# ansible-playbook setup_ocp_static.yml
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bare Metal
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\# ansible-playbook setup_ocp_static_bare_metal.yml -t <tags>
 
-Note : When you run setup_ocp_static.yml all file will download to files directory
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vSphere
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\# ansible-playbook setup_ocp_static_vsphere.yml -t <tags>
+
+Note: 
+- Recommend run with option -t <tags>
+- All file will download to files directory
 
 ## Tested
-- Test on rhel8.X and python3
-- deploy ocp 4.2.16 bare-metal ==> SUCCESS
-- deploy ocp 4.2.16 vSphere    ==> SUCCESS
+- Tested on RHEL8.X and python3
+- Deploy ocp 4.2.16 bare-metal ==> SUCCESS
+- Deploy ocp 4.2.16 vSphere    ==> SUCCESS
 
 License
 ----
