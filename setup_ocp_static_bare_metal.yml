@@ -11,65 +11,72 @@
         state: latest
       loop: "{{ packages_list }}"
       tags: bm1
+    - name: Ensure the default httpd port is 8080
+      lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^Listen '
+        insertafter: '^#Listen '
+        line: Listen 8080
+      tags: bm2
     - name: Start and enabled httpd service
       service:
         name: httpd
         state: started
         enabled: yes
-      tags: bm2
+      tags: bm3
     - name: Download oc client and openshift-install command
       get_url:
         url: "{{ item }}"
         dest: ./files/
       loop: "{{ openshift_client_url }}"
-      tags: bm3
+      tags: bm4
     - name: Download rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer.iso and rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz
       get_url:
         url: "{{ item }}"
         dest: ./files/
       loop: "{{ openshift_install_url }}"
       ignore_errors: yes
-      tags: bm4
+      tags: bm5
     - name: rename rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal-bios.raw.gz to rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz
       command: mv files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal-bios.raw.gz files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz
       ignore_errors: yes
-      tags: bm5
+      tags: bm6
     - name: Setup oc client and openshift-install command
       unarchive:
         src: "{{ item }}"
         dest: /usr/local/bin/
       loop: "{{ openshift_client_file }}"
-      tags: bm6
+      tags: bm7
     - name: Generate an OpenSSH keypair
       command: ssh-keygen -q -t rsa -f ~/.ssh/id_rsa -C "" -N ""
       ignore_errors: yes
-      tags: bm7
+      tags: bm8
     - name: Create openshift artifacts folder
       file:
         path: "~/openshift/{{ CLUSTERID }}"
         state: directory
         recurse: yes
-      tags: bm8
+      tags: bm9
 ################ Change templates from this task ################
     - name: Create install-config.yaml file
       template:
         src: templates/install-config-bare-metal.yml.j2
 #        src: templates/install-config-vsphere.yaml.j2
         dest: "~/openshift/{{ CLUSTERID }}/install-config.yaml"
-      tags: bm9
+      tags: bm10
 #################################################################
     - name: Create manifests file
       command: "openshift-install create manifests --dir ~/openshift/{{ CLUSTERID }}/"
-      tags: bm10
+      tags: bm11
     - name: Disable masters are schedulable
       lineinfile:
         path: "~/openshift/{{ CLUSTERID }}/manifests/cluster-scheduler-02-config.yml"
         regexp: '  mastersSchedulable: true'
         line: '  mastersSchedulable: false'
-      tags: bm11
+      tags: bm12
     - name: Create ignition files
       command: "openshift-install create ignition-configs --dir ~/openshift/{{ CLUSTERID }}"
-      tags: bm12
+      tags: bm13
 #    - name: Download filetranspiler tool (for creating bootstrap with hostname and static IP)
 #      command: "git clone https://github.com/ashcrow/filetranspiler ~/openshift/filetranspiler"
 #      ignore_errors: yes
@@ -101,12 +108,12 @@
         src: "~/openshift/{{ CLUSTERID }}/{{ item.original_ignite_file }}"
         dest: "/var/www/html/{{ item.update_ignite_file }}"
       loop: "{{ nodes }}"
-      tags: bm13
+      tags: bm14
     - name: Create directory for mount openshift ISO file
       file:
         path: "/iso"
         state: directory
-      tags: bm14 
+      tags: bm15 
     - name: Mount rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer.iso
       mount:
         path: /iso
@@ -114,40 +121,40 @@
         fstype: iso9660
         opts: ro,loop
         state: mounted
-      tags: bm15
+      tags: bm16
     - name: Create directory for custom boot openshift ISO
       file:
         path: "/data/iso/{{ item.node_name_short }}" 
         state: directory
       loop: "{{ nodes }}"
-      tags: bm16
+      tags: bm17
     - name: Extract the openshift ISO to a temporary location
       command: "/usr/bin/rsync -a /iso/ /data/iso/{{ item.node_name_short }}"
       loop: "{{ nodes }}"
-      tags: bm17
+      tags: bm18
     - name: Modify the boot entry for each node directory
       lineinfile:
         dest: "/data/iso/{{ item.node_name_short }}/isolinux/isolinux.cfg"
         regexp: "^  append initrd=/images/initramfs.img nomodeset rd.neednet=1 coreos.inst=yes"
         line: "  append initrd=/images/initramfs.img nomodeset rd.neednet=1 coreos.inst=yes {{ add_boot_entry }}"
       loop: "{{ nodes }}"
-      tags: bm18
+      tags: bm19
     - name: Create new openshift ISO for all nodes
       shell: 'cd /data/iso/{{ item.node_name_short }}; mkisofs -U -A "{{ item.node_name_short }}" -V "{{ item.node_name_short }}" -volset "{{ item.node_name_short }}" -J -joliet-long -r -v -T -x ./lost+found -o /data/iso/{{ item.node_name_short }}/{{ item.node_name_short }}.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -eltorito-alt-boot -e images/efiboot.img -no-emul-boot .'
       loop: "{{ nodes }}"
       register: output
-      tags: bm19
+      tags: bm20
     - name: print
       debug:
         var: output
-      tags: bm20
+      tags: bm21
     - name: Unmount a openshift ISO file
       mount:
         path: /iso
         state: absent
-      tags: bm21
+      tags: bm22
     - name: Copy rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz to /var/www/html/
       copy:
         src: "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz"
         dest: /var/www/html/
-      tags: bm22
+      tags: bm23
