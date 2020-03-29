@@ -117,7 +117,8 @@
     - name: Mount rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer.iso
       mount:
         path: /iso
-        src : "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer.iso"
+        src : "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer.x86_64.iso"
+#        src : "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer.iso"
         fstype: iso9660
         opts: ro,loop
         state: mounted
@@ -155,7 +156,8 @@
       tags: vms22
     - name: Copy rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz to /var/www/html/
       copy:
-        src: "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz"
+        src: "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.x86_64.raw.gz"
+#        src: "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz"
         dest: /var/www/html/
       tags: vms23
     - name: Create append-bootstrap file for your bootstrap node
