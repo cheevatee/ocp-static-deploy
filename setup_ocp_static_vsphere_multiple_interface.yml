@@ -38,7 +38,8 @@
       ignore_errors: yes
       tags: vmm5
     - name: rename rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal-bios.raw.gz to rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz
-      command: mv files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal-bios.raw.gz files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz
+      command: mv files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.x86_64.raw.gz files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz
+#      command: mv files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal-bios.raw.gz files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz
       ignore_errors: yes
       tags: vmm6
     - name: Setup oc client and openshift-install command
@@ -114,7 +115,8 @@
     - name: Mount rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer.iso
       mount:
         path: /iso
-        src : "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer.iso"
+        src : "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer.x86_64.iso"
+#        src : "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer.iso"
         fstype: iso9660
         opts: ro,loop
         state: mounted
