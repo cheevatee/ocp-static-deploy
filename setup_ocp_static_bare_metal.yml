@@ -157,5 +157,6 @@
     - name: Copy rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz to /var/www/html/
       copy:
         src: "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.x86_64.raw.gz"
+#        src: "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz"
         dest: /var/www/html/
       tags: bm23
