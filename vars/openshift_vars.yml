@@ -7,9 +7,11 @@ openshift_client_url:
   - "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{ openshift_cli_minor_version }}/openshift-client-linux-{{ openshift_cli_minor_version }}.tar.gz"
   - "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{ openshift_cli_minor_version }}/openshift-install-linux-{{ openshift_cli_minor_version }}.tar.gz"
 openshift_install_url:
+  - "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/{{ openshift_major_version }}/latest/rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer.x86_64.iso"
   - "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/{{ openshift_major_version }}/latest/rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer.iso"
 #  - "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/{{ openshift_major_version }}/latest/rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer-kernel"
 #  - "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/{{ openshift_major_version }}/latest/rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer-initramfs.img"
+  - "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/{{ openshift_major_version }}/latest/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal-bios.x86_64.raw.gz"
   - "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/{{ openshift_major_version }}/latest/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal-bios.raw.gz"
   - "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/{{ openshift_major_version }}/latest/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz"
 openshift_client_file:
