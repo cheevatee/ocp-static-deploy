@@ -11,7 +11,12 @@ httpd_server: 192.168.4.100:8080
 install_dev: vda
 image_url: "http://{{ httpd_server }}/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz"
 ignition_url: "http://{{ httpd_server }}/{{ item.update_ignite_file }}"
+
+# Single DNS server
 add_boot_entry: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ interface_name }}:none nameserver={{ dns1 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+
+# Multiple DNS server
+# add_boot_entry: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ interface_name }}:none nameserver={{ dns1 }} nameserver={{ dns2 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
 
 nodes:
   - node_name: "bootstrap01.{{ CLUSTERID }}.{{ DOMAIN }}"
