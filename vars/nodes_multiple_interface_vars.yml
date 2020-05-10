@@ -1,0 +1,114 @@
+---
+interface_name1: enp1s0
+netmask1: 255.255.255.0
+prefix1: 24
+gateway: 192.168.4.1
+dns1: 192.168.4.120
+dns2: 192.168.4.1
+
+interface_name2: enp7s0
+netmask2: 255.255.255.0
+prefix2: 24
+
+route_net1: 10.11.0.0/24
+route_gateway1: 10.10.10.1
+route_interface1: enp7s0
+
+#route_net2: 10.12.0.0/24
+#route_gateway2: 10.10.10.1
+#route_interface2: enp7s0
+
+domain: "{{ CLUSTERID }}.{{ DOMAIN }}"
+httpd_server: 192.168.4.120:8080
+
+install_dev: vda
+image_url: "http://{{ httpd_server }}/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz"
+ignition_url: "http://{{ httpd_server }}/{{ item.update_ignite_file }}"
+
+# Single DNS server with add route
+add_boot_entry: "bootdev={{ interface_name1 }} ip={{ item.node_ip1 }}::{{ gateway }}:{{ netmask1 }}:{{ item.node_name }}:{{ interface_name1 }}:none nameserver={{ dns1 }} ip={{ item.node_ip2 }}:::{{ netmask2 }}:{{ item.node_name }}:{{ interface_name2 }}:none rd.route={{ route_net1 }}:{{ route_gateway1 }}:{{ route_interface1 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+
+# Multiple DNS server with add route
+# add_boot_entry: "bootdev={{ interface_name1 }} ip={{ item.node_ip1 }}::{{ gateway }}:{{ netmask1 }}:{{ item.node_name }}:{{ interface_name1 }}:none nameserver={{ dns1 }} nameserver={{ dns2 }} ip={{ item.node_ip2 }}:::{{ netmask2 }}:{{ item.node_name }}:{{ interface_name2 }}:none rd.route={{ route_net1 }}:{{ route_gateway1 }}:{{ route_interface1 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+
+# Single DNS server with no add route
+#add_boot_entry: "bootdev={{ interface_name1 }} ip={{ item.node_ip1 }}::{{ gateway }}:{{ netmask1 }}:{{ item.node_name }}:{{ interface_name1 }}:none nameserver={{ dns1 }} ip={{ item.node_ip2 }}:::{{ netmask2 }}:{{ item.node_name }}:{{ interface_name2 }}:none coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+
+# Multiple DNS server with no add route
+#add_boot_entry: "bootdev={{ interface_name1 }} ip={{ item.node_ip1 }}::{{ gateway }}:{{ netmask1 }}:{{ item.node_name }}:{{ interface_name1 }}:none nameserver={{ dns1 }} nameserver={{ dns2 }} ip={{ item.node_ip2 }}:::{{ netmask2 }}:{{ item.node_name }}:{{ interface_name2 }}:none coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+
+# Test
+#add_boot_entry: "bootdev={{ interface_name1 }} ip={{ item.node_ip1 }}::{{ gateway }}:{{ netmask1 }}:{{ item.node_name }}:{{ interface_name1 }}:none nameserver={{ dns1 }} nameserver={{ dns2 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+#add_boot_entry: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ interface_name }}:none nameserver={{ dns1 }} nameserver={{ dns2 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+
+nodes:
+  - node_name: "bootstrap21.{{ CLUSTERID }}.{{ DOMAIN }}"
+    node_name_short: bootstrap21
+    cpus: 4
+    rams: 8192
+    disk: 120
+    node_ip1: 192.168.4.119
+    node_ip2: 10.10.10.119
+    original_ignite_file: bootstrap.ign
+    update_ignite_file: bootstrap21.ign
+    base64_ignite_file: append-bootstrap.64
+  - node_name: "master21.{{ CLUSTERID }}.{{ DOMAIN }}"
+    node_name_short: master21
+    cpus: 4
+    rams: 8192
+    disk: 120
+    node_ip1: 192.168.4.121
+    node_ip2: 10.10.10.121
+    original_ignite_file: master.ign
+    update_ignite_file: master21.ign
+    base64_ignite_file: master21.64
+  - node_name: "master22.{{ CLUSTERID }}.{{ DOMAIN }}"
+    node_name_short: master22
+    cpus: 4
+    rams: 8192
+    disk: 120
+    node_ip1: 192.168.4.122
+    node_ip2: 10.10.10.122
+    original_ignite_file: master.ign
+    update_ignite_file: master22.ign
+    base64_ignite_file: master22.64
+  - node_name: "master23.{{ CLUSTERID }}.{{ DOMAIN }}"
+    cpus: 4
+    rams: 8192
+    disk: 120
+    node_name_short: master23
+    node_ip1: 192.168.4.123
+    node_ip2: 10.10.10.123
+    original_ignite_file: master.ign
+    update_ignite_file: master23.ign
+    base64_ignite_file: master23.64
+  - node_name: "worker21.{{ CLUSTERID }}.{{ DOMAIN }}"
+    cpus: 4
+    rams: 8192
+    disk: 120
+    node_name_short: worker21
+    node_ip1: 192.168.4.124
+    node_ip2: 10.10.10.124
+    original_ignite_file: worker.ign
+    update_ignite_file: worker21.ign
+    base64_ignite_file: worker21.64
+  - node_name: "worker22.{{ CLUSTERID }}.{{ DOMAIN }}"
+    cpus: 4
+    rams: 8192
+    disk: 120
+    node_name_short: worker22
+    node_ip1: 192.168.4.125
+    node_ip2: 10.10.10.125
+    original_ignite_file: worker.ign
+    update_ignite_file: worker22.ign
+    base64_ignite_file: worker22.64
+  - node_name: "worker23.{{ CLUSTERID }}.{{ DOMAIN }}"
+    cpus: 4
+    rams: 8192
+    disk: 120
+    node_name_short: worker23
+    node_ip1: 192.168.4.126
+    node_ip2: 10.10.10.126
+    original_ignite_file: worker.ign
+    update_ignite_file: worker23.ign
+    base64_ignite_file: worker23.64
