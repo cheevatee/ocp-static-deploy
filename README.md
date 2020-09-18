@@ -1,10 +1,15 @@
 # OCP static deployment
 ### Warning: This is beta version !!!  
 I try writing ansible clearly and simply as I can for everyone.
+
+## Requirement
+- RHEL8.X and python3
+
 ## setup
 - Config all variables in vars folder
 - Put your pull secret to files/pull-secret.json
-- Change template for bare-metal or VMware in setup_ocp_static.yml at task "Create install-config.yaml file"
+- Choose setup_ocp_static_<bare_metal|vsphere>\_<multiple_interface>.yaml for depoly OCP in your environment
+#- Change template for bare-metal or VMware in setup_ocp_static.yml at task "Create install-config.yaml file"
 
 ## How to used
 - Check ports on firewall is open
@@ -28,7 +33,6 @@ Note:
 - All file will download to files directory
 
 ## Tested
-- Tested on RHEL8.X and python3
 - Deploy OCP 4.2.16 bare-metal ==> SUCCESS
 - Deploy OCP 4.2.16 vSphere    ==> SUCCESS
 - Deploy OCP 4.3.0 bare-metal ==> SUCCESS
