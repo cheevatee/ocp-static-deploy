@@ -5,11 +5,11 @@ I try writing ansible clearly and simply as I can for everyone.
 ## Requirement
 - RHEL8.X and python3
 
-## Features Updated
+## New Features updated
 - Supported multiple interface when deploy OCP
 - Supportde automatic add route when deploy OCP
 
-## New Feature Update Soon!!!
+## New Feature will update soon!!!
 - Support bonding with multiple interface when deploy OCP
 - Generate ignition file for add new worker nodes
 
