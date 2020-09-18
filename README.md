@@ -37,6 +37,8 @@ Note:
 - Deploy OCP 4.3.9 bare-metal ==> SUCCESS
 - Deploy OCP 4.4.0-rc.11 bare-metal ==> SUCCESS
 - Deploy OCP 4.4.3 bare-metal ==> SUCCESS
+- Deploy OCP 4.5.5 vSphere    ==> SUCCESS
+- Deploy OCP 4.5.7 bare-metal ==> SUCCESS
 
 License
 ----
