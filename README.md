@@ -5,11 +5,11 @@ I try writing ansible clearly and simply as I can for everyone.
 ## Requirement
 - RHEL8.X and python3
 
-## setup
+## Setup
 - Config all variables in vars folder
 - Put your pull secret to files/pull-secret.json
 - Choose setup_ocp_static_<bare_metal|vsphere>\_<multiple_interface>.yaml for depoly OCP in your environment
-#- Change template for bare-metal or VMware in setup_ocp_static.yml at task "Create install-config.yaml file"
+<!--- - Change template for bare-metal or VMware in setup_ocp_static.yml at task "Create install-config.yaml file" -->
 
 ## How to used
 - Check ports on firewall is open
