@@ -57,6 +57,7 @@ Note:
 - Deploy OCP 4.4.3 bare-metal ==> SUCCESS
 - Deploy OCP 4.5.5 vSphere    ==> SUCCESS
 - Deploy OCP 4.5.7 bare-metal ==> SUCCESS
+- Add new worker node with single and bonding interface on OCP 4.5.7 ==> SUCCESS
 
 License
 ----
