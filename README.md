@@ -39,6 +39,7 @@ I try writing ansible clearly and simply as I can for everyone.
 
 ## Add new worker nodes
 - Config all variables in add_ocp_static_worker_nodes.sh and vars/add_nodes_vars.yml|add_nodes_multiple_interface_vars.yml
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\# ansible-playbook add_ocp_static_worker_nodes.yml -t \<tags\>
 
 Note: 
