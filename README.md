@@ -7,11 +7,12 @@ I try writing ansible clearly and simply as I can for everyone.
 
 ## New Features updated
 - Supported multiple interface when deploy OCP
-- Supportde automatic add route when deploy OCP
+- Supported automatic add route when deploy OCP
+- Generate ignition and iso file for add new worker nodes
+- Supported bonding with multiple interface for add new worker nodes
 
 ## New Feature will update soon!!!
 - Support bonding with multiple interface when deploy OCP
-- Generate ignition file for add new worker nodes
 
 ## Setup
 - Config all variables in vars folder
@@ -35,6 +36,10 @@ I try writing ansible clearly and simply as I can for everyone.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; vSphere<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\# ansible-playbook setup_ocp_static_vsphere.yml -t \<tags\>
+
+## Add new worker nodes
+- Config all variables in add_ocp_static_worker_nodes.sh and vars/add_nodes_vars.yml|add_nodes_multiple_interface_vars.yml
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\# ansible-playbook add_ocp_static_worker_nodes.yml -t \<tags\>
 
 Note: 
 - Recommend run with option -t \<tags\>
