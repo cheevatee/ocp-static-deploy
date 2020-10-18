@@ -1,0 +1,46 @@
+---
+interface_name: enp1s0
+netmask: 255.255.255.0
+prefix: 24
+gateway: 192.168.4.1
+dns1: 192.168.4.100
+dns2: 192.168.4.1
+
+bond_interface_name: bond0
+bond_master_interface_name: enp1s0
+bond_slave_interface_name: enp7s0
+bond_mode: 802.3ad
+lacp_rate: fast
+miimon: 100
+xmit_hash_policy: layer2+3
+
+
+domain: "{{ CLUSTERID }}.{{ DOMAIN }}"
+httpd_server: 192.168.4.100:8080
+
+install_dev: vda
+image_url: "http://{{ httpd_server }}/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz"
+ignition_url: "http://{{ httpd_server }}/{{ item.update_ignite_file }}"
+
+# Single DNS server
+# add_boot_entry: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ interface_name }}:none nameserver={{ dns1 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+
+# Multiple DNS server
+# add_boot_entry: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ interface_name }}:none nameserver={{ dns1 }} nameserver={{ dns2 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+
+# Bonding Single DNS server
+add_boot_entry: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ bond_interface_name }}:none bond={{ bond_interface_name }}:{{ bond_master_interface_name }},{{ bond_slave_interface_name }}:mode={{ bond_mode }},lacp_rate={{ lacp_rate }},miimon={{ miimon }},xmit_hash_policy={{ xmit_hash_policy }} nameserver={{ dns1 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+
+# Bonding Multiple DNS server
+add_boot_entry: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ bond_interface_name }}:none bond={{ bond_interface_name }}:{{ bond_master_interface_name }},{{ bond_slave_interface_name }}:mode={{ bond_mode }},lacp_rate={{ lacp_rate }},miimon={{ miimon }},xmit_hash_policy={{ xmit_hash_policy }} nameserver={{ dns1 }} nameserver={{ dns2 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+
+nodes:
+  - node_name: "worker04.{{ DOMAIN }}"
+    cpus: 4
+    rams: 8192
+    disk: 120
+    node_name_short: worker04
+    node_ip: 192.168.4.107
+    original_ignite_file: worker.ign
+    update_ignite_file: worker04.ign
+    base64_ignite_file: worker04.64
