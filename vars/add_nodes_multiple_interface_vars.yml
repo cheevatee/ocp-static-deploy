@@ -1,0 +1,82 @@
+---
+interface_name1: enp1s0
+netmask1: 255.255.255.0
+prefix1: 24
+gateway: 192.168.4.1
+dns1: 192.168.4.120
+dns2: 192.168.4.1
+
+interface_name2: enp7s0
+netmask2: 255.255.255.0
+prefix2: 24
+
+route_net1: 10.11.0.0/24
+route_gateway1: 10.10.10.1
+route_interface1: enp7s0
+
+#route_net2: 10.12.0.0/24
+#route_gateway2: 10.10.10.1
+#route_interface2: enp7s0
+
+bond_interface_name1: bond0
+bond_master_interface_name1: enp1s0
+bond_slave_interface_name1: enp7s0
+bond_mode1: 802.3ad
+lacp_rate1: fast
+miimon1: 100
+xmit_hash_policy1: layer2+3
+
+bond_interface_name2: bond1
+bond_master_interface_name2: enp1s1
+bond_slave_interface_name2: enp7s1
+bond_mode2: 802.3ad
+lacp_rate2: fast
+miimon2: 100
+xmit_hash_policy2: layer2+3
+
+domain: "{{ CLUSTERID }}.{{ DOMAIN }}"
+httpd_server: 192.168.4.120:8080
+
+install_dev: vda
+image_url: "http://{{ httpd_server }}/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz"
+ignition_url: "http://{{ httpd_server }}/{{ item.update_ignite_file }}"
+
+# Single DNS server with add route
+add_boot_entry: "bootdev={{ interface_name1 }} ip={{ item.node_ip1 }}::{{ gateway }}:{{ netmask1 }}:{{ item.node_name }}:{{ interface_name1 }}:none nameserver={{ dns1 }} ip={{ item.node_ip2 }}:::{{ netmask2 }}:{{ item.node_name }}:{{ interface_name2 }}:none rd.route={{ route_net1 }}:{{ route_gateway1 }}:{{ route_interface1 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+
+# Multiple DNS server with add route
+# add_boot_entry: "bootdev={{ interface_name1 }} ip={{ item.node_ip1 }}::{{ gateway }}:{{ netmask1 }}:{{ item.node_name }}:{{ interface_name1 }}:none nameserver={{ dns1 }} nameserver={{ dns2 }} ip={{ item.node_ip2 }}:::{{ netmask2 }}:{{ item.node_name }}:{{ interface_name2 }}:none rd.route={{ route_net1 }}:{{ route_gateway1 }}:{{ route_interface1 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+
+# Single DNS server with no add route
+#add_boot_entry: "bootdev={{ interface_name1 }} ip={{ item.node_ip1 }}::{{ gateway }}:{{ netmask1 }}:{{ item.node_name }}:{{ interface_name1 }}:none nameserver={{ dns1 }} ip={{ item.node_ip2 }}:::{{ netmask2 }}:{{ item.node_name }}:{{ interface_name2 }}:none coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+
+# Multiple DNS server with no add route
+#add_boot_entry: "bootdev={{ interface_name1 }} ip={{ item.node_ip1 }}::{{ gateway }}:{{ netmask1 }}:{{ item.node_name }}:{{ interface_name1 }}:none nameserver={{ dns1 }} nameserver={{ dns2 }} ip={{ item.node_ip2 }}:::{{ netmask2 }}:{{ item.node_name }}:{{ interface_name2 }}:none coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+
+# Bonding Single DNS server with add route
+# add_boot_entry: "bootdev={{ interface_name1 }} ip={{ item.node_ip1 }}::{{ gateway }}:{{ netmask1 }}:{{ item.node_name }}:{{ bond_interface_name1 }}:none bond={{ bond_interface_name1 }}:{{ bond_master_interface_name1 }},{{ bond_slave_interface_name1 }}:mode={{ bond_mode1 }},lacp_rate={{ lacp_rate1 }},miimon={{ miimon1 }},xmit_hash_policy={{ xmit_hash_policy1 }} nameserver={{ dns1 }} ip={{ item.node_ip2 }}:::{{ netmask2 }}:{{ item.node_name }}:{{ bond_interface_name2 }}:none bond={{ bond_interface_name2 }}:{{ bond_master_interface_name2 }},{{ bond_slave_interface_name2 }}:mode={{ bond_mode2 }},lacp_rate={{ lacp_rate2 }},miimon={{ miimon2 }},xmit_hash_policy={{ xmit_hash_policy2 }} rd.route={{ route_net1 }}:{{ route_gateway1 }}:{{ route_interface1 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+
+# Bonding Multiple DNS server with add route
+# add_boot_entry: "bootdev={{ interface_name1 }} ip={{ item.node_ip1 }}::{{ gateway }}:{{ netmask1 }}:{{ item.node_name }}:{{ bond_interface_name1 }}:none bond={{ bond_interface_name1 }}:{{ bond_master_interface_name1 }},{{ bond_slave_interface_name1 }}:mode={{ bond_mode1 }},lacp_rate={{ lacp_rate1 }},miimon={{ miimon1 }},xmit_hash_policy={{ xmit_hash_policy1 }} nameserver={{ dns1 }} nameserver={{ dns2 }} ip={{ item.node_ip2 }}:::{{ netmask2 }}:{{ item.node_name }}:{{ bond_interface_name2 }}:none bond={{ bond_interface_name2 }}:{{ bond_master_interface_name2 }},{{ bond_slave_interface_name2 }}:mode={{ bond_mode2 }},lacp_rate={{ lacp_rate2 }},miimon={{ miimon2 }},xmit_hash_policy={{ xmit_hash_policy2 }} rd.route={{ route_net1 }}:{{ route_gateway1 }}:{{ route_interface1 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+
+# Bonding Single DNS server with no add route
+# add_boot_entry: "bootdev={{ interface_name1 }} ip={{ item.node_ip1 }}::{{ gateway }}:{{ netmask1 }}:{{ item.node_name }}:{{ bond_interface_name1 }}:none bond={{ bond_interface_name1 }}:{{ bond_master_interface_name1 }},{{ bond_slave_interface_name1 }}:mode={{ bond_mode1 }},lacp_rate={{ lacp_rate1 }},miimon={{ miimon1 }},xmit_hash_policy={{ xmit_hash_policy1 }} nameserver={{ dns1 }} ip={{ item.node_ip2 }}:::{{ netmask2 }}:{{ item.node_name }}:{{ bond_interface_name2 }}:none bond={{ bond_interface_name2 }}:{{ bond_master_interface_name2 }},{{ bond_slave_interface_name2 }}:mode={{ bond_mode2 }},lacp_rate={{ lacp_rate2 }},miimon={{ miimon2 }},xmit_hash_policy={{ xmit_hash_policy2 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+
+# Bonding Multiple DNS server with no add route
+# add_boot_entry: "bootdev={{ interface_name1 }} ip={{ item.node_ip1 }}::{{ gateway }}:{{ netmask1 }}:{{ item.node_name }}:{{ bond_interface_name1 }}:none bond={{ bond_interface_name1 }}:{{ bond_master_interface_name1 }},{{ bond_slave_interface_name1 }}:mode={{ bond_mode1 }},lacp_rate={{ lacp_rate1 }},miimon={{ miimon1 }},xmit_hash_policy={{ xmit_hash_policy1 }} nameserver={{ dns1 }} nameserver={{ dns2 }} ip={{ item.node_ip2 }}:::{{ netmask2 }}:{{ item.node_name }}:{{ bond_interface_name2 }}:none bond={{ bond_interface_name2 }}:{{ bond_master_interface_name2 }},{{ bond_slave_interface_name2 }}:mode={{ bond_mode2 }},lacp_rate={{ lacp_rate2 }},miimon={{ miimon2 }},xmit_hash_policy={{ xmit_hash_policy2 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+
+# Test
+#add_boot_entry: "bootdev={{ interface_name1 }} ip={{ item.node_ip1 }}::{{ gateway }}:{{ netmask1 }}:{{ item.node_name }}:{{ interface_name1 }}:none nameserver={{ dns1 }} nameserver={{ dns2 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+#add_boot_entry: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ interface_name }}:none nameserver={{ dns1 }} nameserver={{ dns2 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+
+nodes:
+  - node_name: "worker05.{{ CLUSTERID }}.{{ DOMAIN }}"
+    cpus: 4
+    rams: 8192
+    disk: 120
+    node_name_short: worker05
+    node_ip1: 192.168.4.108
+    node_ip2: 10.10.10.108
+    original_ignite_file: worker.ign
+    update_ignite_file: worker05.ign
+    base64_ignite_file: worker05.64
