@@ -6,7 +6,9 @@ architecture: x86_64
 openshift_client_url:
   - "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{ openshift_cli_minor_version }}/openshift-client-linux-{{ openshift_cli_minor_version }}.tar.gz"
   - "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{ openshift_cli_minor_version }}/openshift-install-linux-{{ openshift_cli_minor_version }}.tar.gz"
+  - "https://mirror.openshift.com/pub/openshift-v4/clients/coreos-installer/latest/coreos-installer"
 openshift_install_url:
+  - "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/{{ openshift_major_version }}/latest/rhcos-{{ openshift_minor_version }}-{{ architecture }}-live.x86_64.iso"
   - "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/{{ openshift_major_version }}/latest/rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer.x86_64.iso"
   - "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/{{ openshift_major_version }}/latest/rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer.iso"
 #  - "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/{{ openshift_major_version }}/latest/rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer-kernel"
