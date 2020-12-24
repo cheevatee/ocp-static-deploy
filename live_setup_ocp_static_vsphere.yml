@@ -128,7 +128,7 @@
         dest: "/data/append-bootstrap.iso"
       tags: vms22
     - name: Embedding an Ignition config in the RHCOS ISO
-      commamd: coreos-installer iso ignition embed -i /var/www/html/{{ item.update_ignite_file }} /data/{{ item.node_name_short }}.iso
+      command: coreos-installer iso ignition embed -i /var/www/html/{{ item.update_ignite_file }} /data/{{ item.node_name_short }}.iso
       loop: "{{ nodes }}"
       tags: vms23
     - name: Embedding an append-bootstrap Ignition config in the RHCOS ISO
