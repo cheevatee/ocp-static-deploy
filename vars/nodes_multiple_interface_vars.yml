@@ -25,6 +25,10 @@ install_dev: vda
 image_url: "http://{{ httpd_server }}/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz"
 ignition_url: "http://{{ httpd_server }}/{{ item.update_ignite_file }}"
 
+kernel_args: "  append initrd=/images/pxeboot/initrd.img,/images/ignition.img random.trust_cpu=on rd.luks.options=discard coreos.liveiso=rhcos-46.82.202012051820-0 ignition.firstboot ignition.platform.id=metal"
+
+kernel_args_update: "  append initrd=/images/pxeboot/initrd.img,/images/ignition.img random.trust_cpu=on rd.luks.options=discard coreos.liveiso=rhcos-46.82.202012051820-0"
+
 # Single DNS server with add route
 add_boot_entry: "bootdev={{ interface_name1 }} ip={{ item.node_ip1 }}::{{ gateway }}:{{ netmask1 }}:{{ item.node_name }}:{{ interface_name1 }}:none nameserver={{ dns1 }} ip={{ item.node_ip2 }}:::{{ netmask2 }}:{{ item.node_name }}:{{ interface_name2 }}:none rd.route={{ route_net1 }}:{{ route_gateway1 }}:{{ route_interface1 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
 
