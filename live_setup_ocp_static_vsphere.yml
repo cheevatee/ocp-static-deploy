@@ -1,1 +1,143 @@
+---
+- hosts: localhost
+  vars_files:
+    - vars/packages_vars.yml
+    - vars/openshift_vars.yml
+    - vars/nodes_vars.yml
+  tasks:
+    - name: Setup prerequire packages 
+      yum:
+        name: "{{ item }}"
+        state: latest
+      loop: "{{ packages_list }}"
+      tags: vms1
+    - name: Ensure the default httpd port is 8080
+      lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^Listen '
+        insertafter: '^#Listen '
+        line: Listen 8080
+      tags: vms2
+    - name: Start and enabled httpd service
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+      tags: vms3
+    - name: Download oc client openshift-install and coreos-installer command
+      get_url:
+        url: "{{ item }}"
+        dest: ./files/
+      loop: "{{ openshift_client_url }}"
+      tags: vms4
+    - name: Download rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer.iso and rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz
+      get_url:
+        url: "{{ item }}"
+        dest: ./files/
+      loop: "{{ openshift_install_url }}"
+      ignore_errors: yes
+      tags: vms5
+    - name: rename rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal-bios.raw.gz to rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz
+      command: mv files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.x86_64.raw.gz files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz
+#      command: mv files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal-bios.raw.gz files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz
+      ignore_errors: yes
+      tags: vms6
+    - name: Setup oc client and openshift-install command
+      unarchive:
+        src: "{{ item }}"
+        dest: /usr/local/bin/
+      loop: "{{ openshift_client_file }}"
+      tags: vms7
+    - name: Setup coreos-installer command
+      copy:
+        src: ./files/coreos-installer
+        dest: /usr/local/bin/
+        mode: 0755
+      tags: vms8
+    - name: Generate an OpenSSH keypair
+      command: ssh-keygen -q -t rsa -f ~/.ssh/id_rsa -C "" -N ""
+      ignore_errors: yes
+      tags: vms9
+    - name: Create openshift artifacts folder
+      file:
+        path: "~/openshift/{{ CLUSTERID }}"
+        state: directory
+        recurse: yes
+      tags: vms10
+################ Change templates from this task ################
+    - name: Create install-config.yaml file
+      template:
+#        src: templates/install-config-bare-metal.yml.j2
+        src: templates/install-config-vsphere.yaml.j2
+        dest: "~/openshift/{{ CLUSTERID }}/install-config.yaml"
+      tags: vms11
+#################################################################
+    - name: Create manifests file
+      command: "openshift-install create manifests --dir ~/openshift/{{ CLUSTERID }}/"
+      tags: vms12
+    - name: Disable masters are schedulable
+      lineinfile:
+        path: "~/openshift/{{ CLUSTERID }}/manifests/cluster-scheduler-02-config.yml"
+        regexp: '  mastersSchedulable: true'
+        line: '  mastersSchedulable: false'
+      tags: vms13
+    - name: Remove the Kubernetes manifest files that define the control plane machines
+      file:
+        path: "~/openshift/{{ CLUSTERID }}/openshift/99_openshift-cluster-api_master-machines-*.yaml"
+        state: absent
+      tags: vms14
+    - name: Remove the Kubernetes manifest files that define the compute machine sets
+      file:
+        path: "~/openshift/{{ CLUSTERID }}/openshift/99_openshift-cluster-api_worker-machineset-*.yaml"
+        state: absent
+      tags: vms15
+    - name: Create ignition files
+      command: "openshift-install create ignition-configs --dir ~/openshift/{{ CLUSTERID }}"
+      tags: vms16
+    - name: Create new ignition file for all nodes
+      copy:
+        src: "~/openshift/{{ CLUSTERID }}/{{ item.original_ignite_file }}"
+        dest: "/var/www/html/{{ item.update_ignite_file }}"
+      loop: "{{ nodes }}"
+      tags: vms17
+    - name: Copy rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz to /var/www/html/
+      copy:
+        src: "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz"
+        dest: /var/www/html/
+      tags: vms18
+    - name: Create append-bootstrap file for your bootstrap node
+      template:
+        src: templates/append-bootstrap.ign.j2
+        dest: /var/www/html/append-bootstrap.ign
+      tags: vms19
+    - name: Covert the master, worker and secondary bootstrap ignition config files to Base64 encoding
+      shell: |
+        /usr/bin/base64 -w0 /var/www/html/{{ item.update_ignite_file }} > /var/www/html/{{ item.base64_ignite_file }}
+        /usr/bin/base64 -w0 /var/www/html/append-bootstrap.ign > /var/www/html/append-bootstrap.64
+      loop: "{{ nodes }}"
+      tags: vms20
+    - name: Create new openshift ISO for all nodes
+      copy:
+        src: "./files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-live.x86_64.iso"
+        dest: "/data/{{ item.node_name_short }}.iso"
+      loop: "{{ nodes }}"
+      tags: vms21
+    - name: Create new openshift ISO for append-bootstrap
+      copy:
+        src: "./files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-live.x86_64.iso"
+        dest: "/data/append-bootstrap.iso"
+      tags: vms22
+    - name: Embedding an Ignition config in the RHCOS ISO
+      commamd: coreos-installer iso ignition embed -i /var/www/html/{{ item.update_ignite_file }} /data/{{ item.node_name_short }}.iso
+      loop: "{{ nodes }}"
+      tags: vms23
+    - name: Embedding an append-bootstrap Ignition config in the RHCOS ISO
+      commamd: coreos-installer iso ignition embed -i /var/www/html/append-bootstrap.ign /data/append-bootstrap.iso
+      loop: "{{ nodes }}"
+      tags: vms24
+      
+      
+
+
+
 
