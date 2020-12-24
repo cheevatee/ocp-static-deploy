@@ -133,7 +133,6 @@
       tags: vms23
     - name: Embedding an append-bootstrap Ignition config in the RHCOS ISO
       command: coreos-installer iso ignition embed -i /var/www/html/append-bootstrap.ign /data/append-bootstrap.iso
-      loop: "{{ nodes }}"
       tags: vms24
       
       
