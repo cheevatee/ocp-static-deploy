@@ -39,14 +39,16 @@ For OCP 4.6 and up.
 
 - Generate ignition file and iso for install OCP
 
-For OCP 4.5 and below.
+For OCP 4.5 and below.<br/>
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bare Metal<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\# ansible-playbook setup_ocp_static_bare_metal.yml -t \<tags\>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; vSphere<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\# ansible-playbook setup_ocp_static_vsphere.yml -t \<tags\>
 
-For OCP 4.6 and up.
+For OCP 4.6 and up.<br/>
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bare Metal<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\# ansible-playbook live_setup_ocp_static_bare_metal.yml -t \<tags\>
 
