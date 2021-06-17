@@ -77,6 +77,7 @@ Note:
 - Deploy OCP 4.5.7 Bare-Metal ==> SUCCESS
 - Add new worker node with single and bonding interface on OCP 4.5.7 ==> SUCCESS
 - Deploy OCP 4.6.23 Bare-Metal ==> SUCCESS
+- Deploy OCP 4.7.13 (UPI on RHOSP)  => SUCCESS
 
 License
 ----
