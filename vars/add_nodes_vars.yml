@@ -23,19 +23,19 @@ image_url: "http://{{ httpd_server }}/rhcos-{{ openshift_minor_version }}-{{ arc
 ignition_url: "http://{{ httpd_server }}/{{ item.update_ignite_file }}"
 
 # Single DNS server
-# add_boot_entry: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ interface_name }}:none nameserver={{ dns1 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+# add_boot_entry: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ interface_name }}:none nameserver={{ dns1 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }} coreos.inst.insecure=yes"
 # add_boot_entry_menu: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ interface_name }}:none nameserver={{ dns1 }} coreos.inst.insecure=yes"
 
 # Multiple DNS server
-# add_boot_entry: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ interface_name }}:none nameserver={{ dns1 }} nameserver={{ dns2 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+# add_boot_entry: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ interface_name }}:none nameserver={{ dns1 }} nameserver={{ dns2 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }} coreos.inst.insecure=yes"
 # add_boot_entry_menu: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ interface_name }}:none nameserver={{ dns1 }} nameserver={{ dns2 }} coreos.inst.insecure=yes"
 
 # Bonding Single DNS server
-add_boot_entry: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ bond_interface_name }}:none bond={{ bond_interface_name }}:{{ bond_master_interface_name }},{{ bond_slave_interface_name }}:mode={{ bond_mode }},lacp_rate={{ lacp_rate }},miimon={{ miimon }},xmit_hash_policy={{ xmit_hash_policy }} nameserver={{ dns1 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+add_boot_entry: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ bond_interface_name }}:none bond={{ bond_interface_name }}:{{ bond_master_interface_name }},{{ bond_slave_interface_name }}:mode={{ bond_mode }},lacp_rate={{ lacp_rate }},miimon={{ miimon }},xmit_hash_policy={{ xmit_hash_policy }} nameserver={{ dns1 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }} coreos.inst.insecure=yes"
 # add_boot_entry_menu: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ bond_interface_name }}:none bond={{ bond_interface_name }}:{{ bond_master_interface_name }},{{ bond_slave_interface_name }}:mode={{ bond_mode }},lacp_rate={{ lacp_rate }},miimon={{ miimon }},xmit_hash_policy={{ xmit_hash_policy }} nameserver={{ dns1 }} coreos.inst.insecure=yes"
 
 # Bonding Multiple DNS server
-# add_boot_entry: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ bond_interface_name }}:none bond={{ bond_interface_name }}:{{ bond_master_interface_name }},{{ bond_slave_interface_name }}:mode={{ bond_mode }},lacp_rate={{ lacp_rate }},miimon={{ miimon }},xmit_hash_policy={{ xmit_hash_policy }} nameserver={{ dns1 }} nameserver={{ dns2 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
+# add_boot_entry: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ bond_interface_name }}:none bond={{ bond_interface_name }}:{{ bond_master_interface_name }},{{ bond_slave_interface_name }}:mode={{ bond_mode }},lacp_rate={{ lacp_rate }},miimon={{ miimon }},xmit_hash_policy={{ xmit_hash_policy }} nameserver={{ dns1 }} nameserver={{ dns2 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }} coreos.inst.insecure=yes"
 # add_boot_entry_menu: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ bond_interface_name }}:none bond={{ bond_interface_name }}:{{ bond_master_interface_name }},{{ bond_slave_interface_name }}:mode={{ bond_mode }},lacp_rate={{ lacp_rate }},miimon={{ miimon }},xmit_hash_policy={{ xmit_hash_policy }} nameserver={{ dns1 }} nameserver={{ dns2 }} coreos.inst.insecure=yes"
 
 #DHCP Server
