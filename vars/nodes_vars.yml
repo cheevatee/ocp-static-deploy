@@ -17,9 +17,15 @@ kernel_args_update: "  append initrd=/images/pxeboot/initrd.img,/images/ignition
 
 # Single DNS server
 add_boot_entry: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ interface_name }}:none nameserver={{ dns1 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.insecure=yes coreos.inst.ignition_url={{ ignition_url }}"
+# add_boot_entry_menu: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ interface_name }}:none nameserver={{ dns1 }} coreos.inst.insecure=yes"
 
 # Multiple DNS server
 # add_boot_entry: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ interface_name }}:none nameserver={{ dns1 }} nameserver={{ dns2 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.insecure=yes coreos.inst.ignition_url={{ ignition_url }}"
+# add_boot_entry_menu: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ interface_name }}:none nameserver={{ dns1 }} nameserver={{ dns2 }} coreos.inst.insecure=yes"
+
+# DHCP Server
+# add_boot_entry_menu: ""
+
 
 nodes:
   - node_name: "bootstrap01.{{ CLUSTERID }}.{{ DOMAIN }}"
