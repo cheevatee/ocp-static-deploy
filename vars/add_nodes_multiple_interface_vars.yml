@@ -77,6 +77,6 @@ nodes:
     node_name_short: worker05
     node_ip1: 192.168.4.108
     node_ip2: 10.10.10.108
-    original_ignite_file: worker.ign
+    original_ignite_file: add_worker_nodes.ign
     update_ignite_file: worker05.ign
     base64_ignite_file: worker05.64
