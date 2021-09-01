@@ -16,6 +16,9 @@ openshift_install_url:
   - "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/{{ openshift_major_version }}/latest/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.x86_64.raw.gz"
   - "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/{{ openshift_major_version }}/latest/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal-bios.raw.gz"
   - "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/{{ openshift_major_version }}/latest/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz"
+  - "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/{{ openshift_major_version }}/{{ openshift_minor_version }}/rhcos-{{ openshift_minor_version }}-{{ architecture }}-live-kernel-x86_64"
+  - "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/{{ openshift_major_version }}/{{ openshift_minor_version }}/rhcos-{{ openshift_minor_version }}-{{ architecture }}-live-initramfs.x86_64.img"
+  - "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/{{ openshift_major_version }}/{{ openshift_minor_version }}/rhcos-{{ openshift_minor_version }}-{{ architecture }}-live-rootfs.x86_64.img"
 openshift_client_file:
   - "files/openshift-client-linux-{{ openshift_cli_minor_version }}.tar.gz"
   - "files/openshift-install-linux-{{ openshift_cli_minor_version }}.tar.gz"
