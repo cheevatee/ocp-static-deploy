@@ -4,4 +4,7 @@
     - python3
     - rsync
     - mkisofs
+    - tftp-server
+    - syslinux
+    - dnsmasq
 
