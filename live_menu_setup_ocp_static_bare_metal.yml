@@ -1,0 +1,125 @@
+---
+- hosts: localhost
+  vars_files:
+    - vars/packages_vars.yml
+    - vars/openshift_vars.yml
+    - vars/nodes_vars.yml
+  tasks:
+    - name: Setup prerequire packages
+      yum:
+        name: "{{ item }}"
+        state: latest
+      loop: "{{ packages_list }}"
+      tags: bm1
+    - name: Ensure the default httpd port is 8080
+      lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^Listen '
+        insertafter: '^#Listen '
+        line: Listen 8080
+      tags: bm2
+    - name: Start and enabled httpd service
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+      tags: bm3
+    - name: Download oc client and openshift-install command
+      get_url:
+        url: "{{ item }}"
+        dest: ./files/
+      loop: "{{ openshift_client_url }}"
+      tags: bm4
+    - name: Download rhcos-{{ openshift_minor_version }}-{{ architecture }}-installer.iso and rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz
+      get_url:
+        url: "{{ item }}"
+        dest: ./files/
+      loop: "{{ openshift_install_url }}"
+      ignore_errors: yes
+      tags: bm5
+    - name: rename rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal-bios.raw.gz to rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz
+      command: mv files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.x86_64.raw.gz files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz
+#      command: mv files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal-bios.raw.gz files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-metal.raw.gz
+      ignore_errors: yes
+      tags: bm6
+    - name: Setup oc client and openshift-install command
+      unarchive:
+        src: "{{ item }}"
+        dest: /usr/local/bin/
+      loop: "{{ openshift_client_file }}"
+      tags: bm7
+    - name: Generate an OpenSSH keypair
+      command: ssh-keygen -q -t rsa -f ~/.ssh/id_rsa -C "" -N ""
+      ignore_errors: yes
+      tags: bm8
+    - name: Create openshift artifacts folder
+      file:
+        path: "~/openshift/{{ CLUSTERID }}"
+        state: directory
+        recurse: yes
+      tags: bm9
+################ Change templates from this task ################
+    - name: Create install-config.yaml file
+      template:
+        src: templates/install-config-bare-metal.yml.j2
+#        src: templates/install-config-vsphere.yaml.j2
+        dest: "~/openshift/{{ CLUSTERID }}/install-config.yaml"
+      tags: bm10
+#################################################################
+    - name: Create manifests file
+      command: "openshift-install create manifests --dir ~/openshift/{{ CLUSTERID }}/"
+      tags: bm11
+    - name: Disable masters are schedulable
+      lineinfile:
+        path: "~/openshift/{{ CLUSTERID }}/manifests/cluster-scheduler-02-config.yml"
+        regexp: '  mastersSchedulable: true'
+        line: '  mastersSchedulable: false'
+      tags: bm12
+    - name: Create ignition files
+      command: "openshift-install create ignition-configs --dir ~/openshift/{{ CLUSTERID }}"
+      tags: bm13
+    - name: Create new ignition file for all nodes
+      copy:
+        src: "~/openshift/{{ CLUSTERID }}/{{item}}"
+        dest: "/var/www/html/"
+#      loop: "{{ nodes }}"
+      loop:
+        - bootstrap.ign
+        - master.ign
+        - worker.ign
+      tags: bm14
+    - name: Create pxe-node file
+      template:
+        src: templates/pxe-node.j2
+        dest: "~/openshift/{{ CLUSTERID }}/{{ item.node_name_short }}.pxe"
+      loop: "{{ nodes }}"
+      tags: bm15
+    - name: Create pxe-node file
+      template:
+        src: templates/pxe-boot-menu.j2
+        dest: "~/openshift/{{ CLUSTERID }}/default"
+      tags: bm16
+    - name: "Append default pxe boot menu with content of pxe-node file"
+      shell: cat ~/openshift/{{ CLUSTERID }}/{{ item.node_name_short }}.pxe >> ~/openshift/{{ CLUSTERID }}/default
+      loop: "{{ nodes }}"
+      tags: bm17
+    - name: Copy default pxe boot menu to /var/lib/tftpboot/pxelinux.cfg/default
+      copy:
+        src: "~/openshift/{{ CLUSTERID }}/default"
+        dest: /var/lib/tftpboot/pxelinux.cfg/
+      tags: bm18
+    - name: Copy rhcos-{{ openshift_minor_version }}-{{ architecture }}-live-kernel-x86_64 to /var/www/html/
+      copy:
+        src: "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-live-kernel-x86_64"
+        dest: /var/www/html/
+      tags: bm19
+    - name: Copy rhcos-{{ openshift_minor_version }}-{{ architecture }}-live-initramfs.x86_64.img to /var/www/html/
+      copy:
+        src: "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-live-initramfs.x86_64.img"
+        dest: /var/www/html/
+      tags: bm20
+    - name: Copy rhcos-{{ openshift_minor_version }}-{{ architecture }}-live-rootfs.x86_64.img to /var/www/html/
+      copy:
+        src: "rhcos-{{ openshift_minor_version }}-{{ architecture }}-live-rootfs.x86_64.img"
+        dest: /var/www/html/
+      tags: bm21
