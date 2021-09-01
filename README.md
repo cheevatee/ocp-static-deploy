@@ -29,6 +29,7 @@ I try writing ansible clearly and simply as I can for everyone.
 For OCP 4.5 and below.
 - Choose setup_ocp_static_<bare_metal|vsphere>\_<multiple_interface>.yml for depoly OCP in your environment
 <!--- - Change template for bare-metal or VMware in setup_ocp_static.yml at task "Create install-config.yaml file" -->
+
 For OCP 4.6 and up.
 - Choose live_setup_ocp_static_<bare_metal|vsphere>\_<multiple_interface>.yml for depoly OCP in your environment
 - Choose live_menu_setup_ocp_static_bare_metal.yml for depoly OCP in your environment
@@ -57,6 +58,8 @@ For OCP 4.5 and below.<br/>
 For OCP 4.6 and up.<br/>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bare Metal (PXE mode - boot menu)<br/>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;```# setup_pxe_boot.sh```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;```# ansible-playbook live_menu_setup_ocp_static_bare_metal.yml -t <tags>```
 
