@@ -1,0 +1,3 @@
+LABEL Install RHEL CoreOS {{ item.node_name_short }}
+  KERNEL http://{{ httpd_server }}/rhcos-{{ openshift_minor_version }}-{{ architecture }}-live-kernel-x86_64
+  APPEND initrd=http://{{ httpd_server }}/rhcos-{{ openshift_minor_version }}-{{ architecture }}-live-initramfs.x86_64.img coreos.live.rootfs_url=http://{{ httpd_server }}/rhcos-{{ openshift_minor_version }}-{{ architecture }}-live-rootfs.x86_64.img coreos.inst.install_dev={{ install_dev }} coreos.inst.ignition_url=http://{{ httpd_server }}/{{ item.original_ignite_file }} {{ add_boot_entry_menu }}
