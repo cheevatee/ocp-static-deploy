@@ -19,7 +19,7 @@ I try writing ansible clearly and simply as I can for everyone.
 
 ## New Feature will update soon!!!
 - Supported deploy on vSphere with OCP 4.6 and 4.7 rhcos-live-iso (Still on processes)
-- Supported pxe boot menu for install OpenShift on vSphere
+- Supported PXE boot menu for install OpenShift on vSphere
 - Supported bonding with multiple interface for add new worker nodes for OCP 4.6 and up.
 
 ## Setup
@@ -97,20 +97,21 @@ For OCP 4.6 and up. (PXE mode - boot menu)<br/>
 - All file will download to files directory
 
 ## Tested
-- Deploy OCP 4.2.16 Bare-Metal ==> SUCCESS
-- Deploy OCP 4.2.16 vSphere    ==> SUCCESS
-- Deploy OCP 4.3.0 Bare-Metal ==> SUCCESS
-- Deploy OCP 4.3.3 vSphere    ==> SUCCESS
-- Deploy OCP 4.3.8 Bare-Metal ==> SUCCESS
-- Deploy OCP 4.3.9 Bare-Metal ==> SUCCESS
-- Deploy OCP 4.4.0-rc.11 bare-metal ==> SUCCESS
-- Deploy OCP 4.4.3 Bare-Metal ==> SUCCESS
-- Deploy OCP 4.5.5 vSphere    ==> SUCCESS
-- Deploy OCP 4.5.7 Bare-Metal ==> SUCCESS
-- Add new worker node with single and bonding interface on OCP 4.5.7 ==> SUCCESS
-- Add new master node on OCP 4.6.8 ==> SUCCESS
-- Deploy OCP 4.6.23 Bare-Metal ==> SUCCESS
-- Deploy OCP 4.7.13 (UPI on RHOSP)  => SUCCESS
+- Deploy OCP 4.2.16 Bare-Metal (ISO mode)==> SUCCESS
+- Deploy OCP 4.2.16 vSphere (ISO mode)   ==> SUCCESS
+- Deploy OCP 4.3.0 Bare-Metal (ISO mode) ==> SUCCESS
+- Deploy OCP 4.3.3 vSphere (ISO mode)    ==> SUCCESS
+- Deploy OCP 4.3.8 Bare-Metal (ISO mode) ==> SUCCESS
+- Deploy OCP 4.3.9 Bare-Metal (ISO mode) ==> SUCCESS
+- Deploy OCP 4.4.0-rc.11 bare-metal (ISO mode) ==> SUCCESS
+- Deploy OCP 4.4.3 Bare-Metal (ISO mode) ==> SUCCESS
+- Deploy OCP 4.5.5 vSphere (ISO mode)    ==> SUCCESS
+- Deploy OCP 4.5.7 Bare-Metal (ISO mode) ==> SUCCESS
+- Add new worker nodes with single and bonding interface on OCP 4.5.7 ==> SUCCESS
+- Deploy OCP 4.6.8 Bare-Metal (PXE mode - boot menu) ==> SUCCESS
+- Add new master/woker nodes with single interface on OCP 4.6.8 (PXE mode - boot menu) ==> SUCCESS
+- Deploy OCP 4.6.23 Bare-Metal (ISO mode)==> SUCCESS
+- Deploy OCP 4.7.13 (UPI on RHOSP) (ISO mode) ==> SUCCESS
 
 License
 ----
