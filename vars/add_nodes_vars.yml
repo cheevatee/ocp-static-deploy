@@ -41,6 +41,6 @@ nodes:
     disk: 120
     node_name_short: worker04
     node_ip: 192.168.4.107
-    original_ignite_file: worker.ign
+    original_ignite_file: add_worker_nodes.ign
     update_ignite_file: worker04.ign
     base64_ignite_file: worker04.64
