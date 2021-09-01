@@ -108,8 +108,8 @@ For OCP 4.6 and up. (PXE mode - boot menu)<br/>
 - Deploy OCP 4.5.5 vSphere (ISO mode)    ==> SUCCESS
 - Deploy OCP 4.5.7 Bare-Metal (ISO mode) ==> SUCCESS
 - Add new worker nodes with single and bonding interface on OCP 4.5.7 ==> SUCCESS
-- Deploy OCP 4.6.8 Bare-Metal (PXE mode - boot menu) ==> SUCCESS
-- Add new master/woker nodes with single interface on OCP 4.6.8 (PXE mode - boot menu) ==> SUCCESS
+- Deploy OCP 4.6.8 Bare-Metal (PXE mode) ==> SUCCESS
+- Add new master/woker nodes with single interface on OCP 4.6.8 (PXE mode) ==> SUCCESS
 - Deploy OCP 4.6.23 Bare-Metal (ISO mode)==> SUCCESS
 - Deploy OCP 4.7.13 (UPI on RHOSP) (ISO mode) ==> SUCCESS
 
