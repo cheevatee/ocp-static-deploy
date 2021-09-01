@@ -44,6 +44,9 @@ add_boot_entry: "bootdev={{ interface_name1 }} ip={{ item.node_ip1 }}::{{ gatewa
 # add_boot_entry: "bootdev={{ interface_name1 }} ip={{ item.node_ip1 }}::{{ gateway }}:{{ netmask1 }}:{{ item.node_name }}:{{ interface_name1 }}:none nameserver={{ dns1 }} nameserver={{ dns2 }} ip={{ item.node_ip2 }}:::{{ netmask2 }}:{{ item.node_name }}:{{ interface_name2 }}:none coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.insecure=yes coreos.inst.ignition_url={{ ignition_url }}"
 # add_boot_entry_menu: "bootdev={{ interface_name1 }} ip={{ item.node_ip1 }}::{{ gateway }}:{{ netmask1 }}:{{ item.node_name }}:{{ interface_name1 }}:none nameserver={{ dns1 }} nameserver={{ dns2 }} ip={{ item.node_ip2 }}:::{{ netmask2 }}:{{ item.node_name }}:{{ interface_name2 }}:none coreos.inst.insecure=yes"
 
+# DHCP Server
+# add_boot_entry_menu: ""
+
 # Test
 # add_boot_entry: "bootdev={{ interface_name1 }} ip={{ item.node_ip1 }}::{{ gateway }}:{{ netmask1 }}:{{ item.node_name }}:{{ interface_name1 }}:none nameserver={{ dns1 }} nameserver={{ dns2 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
 # add_boot_entry: "ip={{ item.node_ip }}::{{ gateway }}:{{ netmask }}:{{ item.node_name }}:{{ interface_name }}:none nameserver={{ dns1 }} nameserver={{ dns2 }} coreos.inst.install_dev={{ install_dev }} coreos.inst.image_url={{ image_url }} coreos.inst.ignition_url={{ ignition_url }}"
