@@ -88,38 +88,57 @@
         - master.ign
         - worker.ign
       tags: bm14
+    - name: Copy syslinux file to /var/lib/tftpboot/
+      copy:
+        src: "/usr/share/syslinux/{{item}}"
+        dest: "/var/lib/tftpboot/"
+      loop:
+        - vesamenu.c32
+        - pxelinux.0
+        - ldlinux.c32
+        - libcom32.c32
+        - libutil.c32
+      tags: bm15
+    - name: Create directory for pxe rhcos file
+      file:
+        path: "{{item}}"
+        state: directory
+      loop:
+        - /var/lib/tftpboot/pxelinux.cfg
+        - /var/lib/tftpboot/redhat
+      tags: bm16
     - name: Create pxe-node file
       template:
         src: templates/pxe-node.j2
         dest: "~/openshift/{{ CLUSTERID }}/{{ item.node_name_short }}.pxe"
       loop: "{{ nodes }}"
-      tags: bm15
+      tags: bm17
     - name: Create pxe-node file
       template:
         src: templates/pxe-boot-menu.j2
         dest: "~/openshift/{{ CLUSTERID }}/default"
-      tags: bm16
+      tags: bm18
     - name: "Append default pxe boot menu with content of pxe-node file"
       shell: cat ~/openshift/{{ CLUSTERID }}/{{ item.node_name_short }}.pxe >> ~/openshift/{{ CLUSTERID }}/default
       loop: "{{ nodes }}"
-      tags: bm17
+      tags: bm19
     - name: Copy default pxe boot menu to /var/lib/tftpboot/pxelinux.cfg/default
       copy:
         src: "~/openshift/{{ CLUSTERID }}/default"
         dest: /var/lib/tftpboot/pxelinux.cfg/
-      tags: bm18
-    - name: Copy rhcos-{{ openshift_minor_version }}-{{ architecture }}-live-kernel-x86_64 to /var/www/html/
+      tags: bm20
+    - name: Copy rhcos-{{ openshift_minor_version }}-{{ architecture }}-live-kernel-x86_64 to /var/lib/tftpboot/redhat/
       copy:
         src: "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-live-kernel-x86_64"
-        dest: /var/www/html/
-      tags: bm19
-    - name: Copy rhcos-{{ openshift_minor_version }}-{{ architecture }}-live-initramfs.x86_64.img to /var/www/html/
+        dest: /var/lib/tftpboot/redhat/
+      tags: bm21
+    - name: Copy rhcos-{{ openshift_minor_version }}-{{ architecture }}-live-initramfs.x86_64.img to /var/lib/tftpboot/redhat/
       copy:
         src: "files/rhcos-{{ openshift_minor_version }}-{{ architecture }}-live-initramfs.x86_64.img"
-        dest: /var/www/html/
-      tags: bm20
+        dest: /var/lib/tftpboot/redhat/
+      tags: bm22
     - name: Copy rhcos-{{ openshift_minor_version }}-{{ architecture }}-live-rootfs.x86_64.img to /var/www/html/
       copy:
         src: "rhcos-{{ openshift_minor_version }}-{{ architecture }}-live-rootfs.x86_64.img"
         dest: /var/www/html/
-      tags: bm21
+      tags: bm23
