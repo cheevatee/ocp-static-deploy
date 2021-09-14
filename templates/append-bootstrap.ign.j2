@@ -1,7 +1,12 @@
+# IMPORTANT NOTE: 
+# ignition version 2.1.0 for OpenShift 4.5 and below used "append"
+# ignition version 2.1.0 for OpenShift 4.6 ++ used "merge"
+
 {
   "ignition": {
     "config": {
-      "append": [
+#      "append": [
+      "merge": [
         {
           "source": "http://{{ httpd_server }}/bootstrap01.ign",
           "verification": {}
